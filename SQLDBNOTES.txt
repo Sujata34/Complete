@@ -1,0 +1,1359 @@
+
+
+create database Dinesh 
+create table Student1(
+RollNumber int,
+Name varchar(50),
+Age int)
+alter table Student1 ADD CONSTRAINT myconst check (Age>1 and Age < 150)
+
+
+use Dinesh
+
+insert into Student1 values (1,'Dinesh',200);
+select * from student;
+select * from trainer;
+
+drop table student;
+drop table trainer;
+
+create table Trainer(Id int primary key, Name varchar(50))
+create table StudentT
+(Id int Primary key,
+ Name varchar(50),
+ TrainerID int foreign key references Trainer(Id)
+)
+
+
+Insert into Trainer (Id,Name) values(1,'Dinesh')
+Insert into Trainer (Id,Name) values(2,'Mahesh')
+Insert into Trainer (Id,Name) values(3,'Sakshi')
+
+Insert into StudentT (Id,Name,TrainerID) values (101,'Vishal',1)
+Insert into StudentT (Id,Name,TrainerID) values (102,'Vikul',2)
+Insert into StudentT (Id,Name,TrainerID) values (103,'Deepak',1)
+Insert into StudentT (Id,Name,TrainerID) values (104,'Nishant',100)
+
+Select * from StudentT
+Select * from Trainer
+
+CONSTRAINT:
+		1. Not NULL
+				create table student
+				(
+					RollNo int ,
+					Name varchar(20) Not null,
+					Age int
+				)
+		2. primary key
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int
+				)
+		3. unique key
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int,
+					email varchar(20) unique
+				)
+		4. foreign key
+				create table trainer
+				(
+					Id int,
+					Name varchar(20)
+				)
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int,
+					email varchar(20) unique,
+					TrainerId int foreign key references trainer(Id)
+				)
+
+				TrainerId value may be null.
+
+				----------------------------------------
+				Cascading refential intigrity
+				---------------------------------------
+				1. NO Action
+				2. Cascade
+				3. Set NULL
+				4. Set Default
+
+				create table trainer
+				(
+					Id int,
+					Name varchar(20)
+				)
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int,
+					email varchar(20) unique,
+					TrainerId int foreign key references trainer(Id) on delete cascade
+					--TrainerId int foreign key references trainer(Id) on delete set NULL
+					--TrainerId int foreign key references trainer(Id) on delete set default
+				)
+
+		5. composite key
+				create table student
+				(
+					RollNo int,
+					Name varchar(20),
+					Age int,
+					primary key(RollNo,Name)
+				)
+		6. Default CONSTRAINT
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int,
+					City varchar(40) default 'Pune'
+				)
+		7. check CONSTRAINT
+				create table student
+				(
+					RollNo int primary key,
+					Name varchar(20),
+					Age int check(Age > 1 and Age < 100)
+				)
+
+
+
+
+		Last generated identity value.
+		1. scope_Identity:- same session same scope
+		2. @@Identity:- same session any scope(if SP executed in another scope but for same session)
+		3. Ident_current:- any session any scope
+
+		create table Student1
+		(	Id int identity(1,1) primary key,
+			Name varchar(50),
+			Gender varchar(10)
+		)
+
+		insert into Student1 values ('Dinesh', 'Male')
+		insert into Student1 values ('Mahesh', 'Male')
+		insert into Student1 values ('Shital', 'Female')
+		insert into Student1 values ('Swati', 'Female')
+		insert into Student1 values ('Dipak', 'Male')
+
+		set IDENTITY_INSERT Student1 ON
+		insert into Student1(ID,Name,Gender) values (3,'Prakash', 'Male')
+
+		set IDENTITY_INSERT Student1 OFF
+
+		you can reset the identity
+		DBCC checkident(student,reseed,0)
+
+
+		select SCOPE_IDENTITY()
+
+		select scope_identity()
+		select @@Identity
+		select ident_current ('Student1')
+
+		select * from Student1
+
+		select distinct Gender from Student1
+		select distinct Gender, Name from Student1
+
+		select top 2 * from Student1
+
+-----------------------------------
+Operators
+------------------------------------
+		select * from Student1 
+		where Name = 'Dinesh'
+
+		select * from Student1 
+		where Id > 3
+
+		select * from Student1 
+		where Id = 3
+
+		select * from Student1 
+		where Id in (1,3)
+
+		select * from Student1 
+		where Id between 2 and 4
+
+		select * from Student1 
+		where Name like '%sh%'
+
+		select * from Student1 
+		where Name like '_i%'
+
+		select * from Student1 
+		order by Name desc, Gender desc 
+
+		Aggregate functions:
+
+		select count(*) from Student1
+		select Min(Id) from Student1
+		select Max(Id) from Student1
+		select sum(Id) from Student1
+		select Avg(Id) from Student1
+
+		from s in table
+		where s.age>20
+		select s.Name
+
+----------------------------|
+Joins                       |
+----------------------------|
+		Create table Trainer1(Id int primary key,Name Varchar(50) )
+		create table Student
+		(RollNo int primary key Identity(1,1),
+		Name varchar(50),
+		Gender varchar(10),
+		Age int,
+		TrainerId int foreign key references Trainer(Id)
+		)
+
+		insert into Student values('Dinesh','Male', 25,1)
+		insert into Student values('Pooja','Female', 20,2)
+		insert into Student values('Dipak','Male', 22,1)
+		insert into Student values('Avi','Male', 25,3)
+		insert into Student values('Swati','Female', 27,2)
+		insert into Student values('Aniket','Male', 23,NULL)
+		insert into Student values('Rucha','Female', 20,NULL)
+
+		insert into Trainer1 values(1,'Vishal')
+		insert into Trainer1 values(2,'Vikul')
+		insert into Trainer1 values(3,'Mahesh')
+
+		select * from Trainer1
+		select * from Student
+
+		update Student set TrainerId=1 where RollNo=4
+
+		select * from Student s right join Trainer1 t on s.TrainerId=t.Id
+		select * from Student s full join Trainer1 t on s.TrainerId=t.Id
+
+		select * from Student s cross join Trainer1 t 
+
+		//Uncommon from left
+		select * from Student s left join Trainer1 t on s.TrainerId=t.Id where t.Id is NULL
+
+		//Uncommon from right
+		select * from Student s right join Trainer1 t on s.TrainerId=t.Id where s.TrainerId is NULL
+
+		//Uncommon from both.
+		select * from Student s full join Trainer1 t on s.TrainerId=t.Id where t.Id is NULL or s.TrainerId is NULL
+
+
+-----------------------------------
+Self Join
+--------------------
+		create table Organization
+		(
+			Id int primary key,
+			Name varchar(20),
+			ManagerId int 
+		)
+
+		insert into Organization values(1,'Dinesh', 2)
+		insert into Organization values(2,'Mahesh', 3)
+		insert into Organization values(3,'Richa', 4)
+		insert into Organization values(4,'Vishal', 1)
+		insert into Organization values(5,'Swati', NULL)
+		update Organization set ManagerId=3 where Id=2
+
+		select o1.Name as EmployeeName,o2.Name as ManagerName from 
+		Organization o1 left join Organization o2
+		on o1.ManagerId = o2.Id
+
+
+---------------------------------------------------
+Replace Null Value
+		1. ISNULL()
+		2. Case statement
+		3. Coalesce
+
+		1. ISNULL:
+		select o1.Name as EmployeeName,ISNULL(o2.Name,'No Manager') as ManagerName from 
+		Organization o1 left join Organization o2
+		on o1.ManagerId = o2.Id
+
+		2. Case statement:
+		select o1.Name as EmployeeName,(case when o2.Name IS NULL then 'No Manager' else o2.Name end) as ManagerName from 
+		Organization o1 left join Organization o2
+		on o1.ManagerId = o2.Id
+
+
+		create table person(Id int primary key identity, Name varchar(20),Gender varchar(10))
+		insert into person values('Dinesh', 'Male')
+		insert into person values('Richa', 'Female')
+		insert into person values('Vikul', 'Male')
+		insert into person values('Swati', 'Female')
+		insert into person values('Richa', 'Female')
+
+		update person set Gender='Male' where id in (1,3)
+		select Name, (case when Gender='Male' then 'M' when Gender = 'Female' then 'F' else 'UNKOWN' end) as Gender from person
+		update person set Gender =  (case when Gender='Male' then 'M' when Gender = 'Female' then 'F' else 'UNKOWN' end)
+		select * from person
+		update person set Gender =  (case when Gender='Male' then 'F' when Gender = 'Female' then 'M' else 'UNKOWN' end)
+
+		3. coalesce function:
+
+		create table person2
+		(
+			Id int primary key identity,
+			Name varchar(20),
+			PrimaryEmail varchar(20),
+			AlternateEmail Varchar(20)
+		)
+		insert into person2 values('Dinesh', 'n@n.com','m@n.com')
+		insert into person2 values('Vishal', 'v@v.com',NULL)
+		insert into person2 values('Richa', NULL,'r@n.com')
+		insert into person2 values('Swati', NULL,NULL)
+
+		select * from person2
+
+		select Name,coalesce(PrimaryEmail, AlternateEmail,'Email not specified') as Gender from person2
+
+
+Stored Procedures
+		we can call function inside sp
+		sp can return value but its default type is int
+		create procedure _usp_GETALLSTUDENTS
+		as
+		begin
+		select * from Student
+		end
+
+		exec _usp_GETALLSTUDENTS 2,'female'
+
+		create proc usp_GetStudentCount
+		as
+		begin
+		declare @count int
+		select @count = count(0) from Student
+		return @count
+		end
+
+		declare @c int
+		exec @c=usp_GetStudentCount
+		print @c
+
+
+		alter proc usp_GetStudentCount
+		@RollNo int,
+		@Name varchar(50) out
+		with encryption
+		as
+		begin
+		select @Name = Name from Student where RollNo = @RollNo
+		end
+
+		exec usp_GetStudentCount 2
+
+		declare @c varchar(50)
+		exec usp_GetStudentCount  2, @c out
+		print @c
+
+		exec sp_helptext usp_GetStudentCount
+
+
+-------------------------------------
+-------------------------------------
+Subqueries
+
+create table tblProduct
+(
+	Id int primary key identity,
+	Name varchar(50),
+	UnitPrice int
+)
+
+insert into tblProduct values('TV', 10000)
+insert into tblProduct values('Mobile', 8000)
+insert into tblProduct values('Laptop', 40000)
+
+create table tblProductSales
+(
+	Id int primary key identity,
+	ProductId int foreign key references tblProduct(Id),
+	Quantity int
+)
+
+insert into tblProductSales values(1, 5)
+insert into tblProductSales values(1, 2)
+insert into tblProductSales values(3, 2)
+
+
+select * from tblProduct
+select * from tblProductSales
+
+select * from tblProduct
+where Id in (select distinct ProductId from tblProductSales)
+
+select Name,	isnull((select sum(Quantity) 
+				from tblProductSales 
+				where ProductId=tblProduct.Id),0) as Total 
+from tblProduct
+
+
+select distinct tp.Name from tblProduct tp join tblProductSales tps
+on tp.Id = tps.ProductId
+
+select tp.Name from tblProduct tp left join tblProductSales tps
+on tp.Id = tps.ProductId
+where tps.ProductId is NULL
+
+
+------------------------
+UNION
+------------------------
+
+		create table Java
+		(
+			Id int,
+			Name varchar(50)
+		)
+		insert into Java values(1,'Dinesh')
+		insert into Java values(2,'Mahesh')
+		insert into Java values(3,'Swati')
+
+		create table DotNet
+		(
+			Id int,
+			Name varchar(50)
+		)
+
+		insert into DotNet values(1,'Pragati')
+		insert into DotNet values(3,'Swati') 
+
+		select * from Java
+		select * from DotNet
+
+		select * from Java
+UNION ALL
+		select * from DotNet
+
+		select * from Java
+UNION 
+		select * from DotNet
+
+		--Should have same columns in both the tables otherwise it will give error
+
+		select Id, Name from Java
+		UNION 
+		select Id from DotNet
+
+
+		create table T1
+		(Id int, Name varchar(30))
+		insert into T1 values (1,'Mahesh')
+		insert into T1 values (2,'Vishal')
+
+		create table T2 (Gender varchar(20), Email Varchar(20) )
+		insert into T2 values ('Male', 'k@k.com')
+		insert into T2 values ('Female', 'n@n.com')
+
+		select Id, Name, NULL as Gender,Null as  Email  from T1
+		UNION 
+		select NULL as Id,  NULL as Name,Gender,Email from T2
+
+
+		select * from Java
+		intersect
+		select * from DotNet
+
+		select * from Java
+		except
+		select * from DotNet
+
+
+		select * from DotNet
+		except
+		select * from Java
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--Temporary Tables
+		--1. Local  
+				created with #
+				scope is limited to session who is creating it.
+				can not access in another session. 
+				table will be deleted once we close the session.
+		--2. Global
+				created with ##
+				accessible accross all the session. 
+				can be accessed in another session. 
+				table will be deleted once we close the session who has created the table.
+
+		create table #Person
+		(Id int,Name Varchar(20))
+		insert into #Person values(1,'Dinesh')
+		insert into #Person Values(2,'Mahesh')
+
+		select * from #Person
+
+		create table ##Person1
+		(Id int, Name Varchar(20))
+		insert into ##Person1 values(1,'Dinesh')
+		insert into ##Person1 Values(2,'Mahesh')
+		select * from ##Person1
+
+		****Table variable****
+				declare @Student table(Id int,Name varchar(20))
+				insert into @student values(1,'Dinesh')
+				insert into @student values(2,'Mahesh')
+
+				all above command should run all at once(in batch) otherwise you will get error.
+
+		
+
+
+----------------------------------
+Copy from one DB to another DB
+--------------------------------
+	select * into DB2.dbo.Student12 from Student
+	select * from DB2.dbo.Student12
+	
+	--copy only schema
+	select * into DB2.dbo.StudentonlySchema from Student
+	where 1<>1
+
+
+-------------------------------------------------
+Functions
+-------------------------------------------------
+	-built in functions
+	-user defined functions
+		-scalar function
+		-inline table valued functions
+		-multi statement table valued functions
+	
+		select ascii('+')
+
+		declare @start int = 1
+		while(@start<10)
+		begin
+			print @start
+			set @start = @start +1
+		end
+
+		declare @name varchar(20) = '      Dinesh          '
+
+		select upper (ltrim(rtrim (@name)))
+
+		select upper(Name) as Name from Student where Name like 'n%'
+
+		select left(Name,1),Name,Gender from Student 
+		select right(Name,1),Name,Gender from Student 
+
+		select Name, Gender from Student where left(Name,1)='N'
+
+		declare @Email varchar(20) = 'Dinesh@org.com'
+		select CHARINDEX('@',@Email,1)
+		select substring(@Email,1,CHARINDEX('@',@Email,1)-1)
+		select substring(@Email,CHARINDEX('@',@Email,1)+1,len(@Email))
+		select substring(@Email,CHARINDEX('@',@Email,1)+1,len(@Email)-CHARINDEX('@',@Email,1))
+
+		select PrimaryEmail from person2
+
+		select substring(PrimaryEmail,1,CHARINDEX('@',PrimaryEmail,1)-1) as UserName,
+		substring(PrimaryEmail,CHARINDEX('@',PrimaryEmail,1)+1,len(PrimaryEmail)-CHARINDEX('@',PrimaryEmail,1)) as Domain
+		from person2
+
+		select substring(PrimaryEmail,CHARINDEX('@',PrimaryEmail,1)+1,len(PrimaryEmail)-CHARINDEX('@',PrimaryEmail,1)) as Domain,
+		count(Id) as Total
+		from person2
+		group by substring(PrimaryEmail,CHARINDEX('@',PrimaryEmail,1)+1,len(PrimaryEmail)-CHARINDEX('@',PrimaryEmail,1)) 
+
+
+		declare @mobile varchar(10) = '8975405767'
+		select REPLICATE('X',8)+SUBSTRING(@mobile,9,2)
+
+		declare @FName varchar(10)='Dinesh'
+		declare @LName varchar(10)='Mane'
+		select @FName+SPACE(5)+@LName
+
+
+		select Id,Name,PrimaryEmail,STUFF(PrimaryEmail,2,3,'***') as secure ,REPLACE(PrimaryEmail,'.com','.net')as NewEmail from person2
+
+
+----------------------------------------
+Date function
+--------------------------------------------
+	select GETDATE() 2021-09-02 19:20:38.340
+	select CURRENT_TIMESTAMP
+	select SYSDATETIME()
+	select SYSDATETIMEOFFSET()
+	select GETUTCDATE()
+	select SYSUTCDATETIME()
+
+	create table tblDateTime
+	(
+		c_time time(7) NULL,
+		c_date date NULL,
+		c_smalldatetime smalldatetime NULL,
+		c_datetime datetime NULL,
+		c_datetime2 datetime2 (7) NULL,
+		c_datetimeoffset datetimeoffset (7) NULL
+	)
+
+	insert into tblDateTime values(getdate(),getdate(),getdate(),getdate(),getdate(),getdate())
+	insert into tblDateTime values(getdate(),getdate(),getdate(),getdate(),getdate(),sysdatetimeoffset())
+
+
+	select * from tblDateTime
+
+	select isdate(getdate())
+
+	select isdate('2021-09-32 19:20:38.340')
+
+	select datename(dw,'2021-09-02 19:20:38.340')
+
+	select datename(mm,'2021-09-02 19:20:38.340')
+
+	select datename(dd,'2021-09-02 19:20:38.340')
+
+	select datepart(qq,'2021-09-02 19:20:38.340')
+
+	select dateadd(DAY,2,'2021-09-02 19:20:38.340')
+
+	select DATEDIFF(month,'2021-09-02 19:20:38.340','2021-10-05 19:20:38.340')
+
+	select * from Student
+
+	select 'F-'+CAST(RollNo as varchar) ID,Name from Student
+
+	select 'F-'+convert(varchar,RollNo) ID,Name from Student
+
+	select convert(varchar(10),GETDATE(),102)
+
+
+	Mathematical Funcations
+
+	select ABS(-100.123)
+
+	select CEILING(-15.5)
+	select FLOOR(15.5)
+
+	select POWER(2,6)
+
+	select floor(RAND() *100)
+
+	select round(123.223,-1,1)
+
+	select datename(day,EOMONTH(GETDATE()))
+
+
+--------------------------
+User defined Function
+--------------------------
+
+	1. scalar Function
+			select * from Student
+
+			create function fn_StudentCount()
+			returns int
+			as
+			begin
+			declare @c int
+			select @c=count(1) from Student
+			return @c
+			end
+
+			select dbo.fn_StudentCount()
+
+			create function fn_StudentGenderCount(@Gender varchar(10))
+			returns int
+			as
+			begin
+			declare @c int
+			select @c=count(1) from Student where Gender = @Gender
+			return @c
+			end
+
+
+			select dbo.fn_StudentGenderCount('Male')
+
+			create function fn_GetTrainerName(@TrainerId int)
+			returns varchar(50)
+			as 
+			begin
+			declare @Name varchar(50)
+			select @Name =  Name from Trainer where Id = @TrainerId
+			return @Name
+			end
+
+			select * from Trainer
+			select dbo.fn_GetTrainerName(1)
+
+			select id, name, gender, dbo.fn_GetTrainerName(trainer_id) from studentCopy 
+
+
+    2. Inline table valued function *****************************************
+			--it returns table and it don't have begin and end
+				create function fn_GetStudentTrainerInfo()
+				returns table
+				as
+				return (select s.name as SName, t.Name as TName from studentCopy s join Trainer1 t on s.trainer_id=t.Id)
+
+
+				select * from  dbo.fn_GetStudentTrainerInfo()
+
+	3. Multiline table valued function
+				create function fn_MultistamentTable()
+				returns @Student table (StudentName varchar(50),TrainerName varchar(50))
+				as
+				begin
+				insert into @Student select s.name as SName, t.Name as TName 
+				from studentCopy s join Trainer1 t on s.trainer_id=t.Id
+				return
+				end
+
+				select * from dbo.fn_MultistamentTable()
+
+----------------------------------------------------
+		--deffered name resolution supprot
+--------------------------------------------------
+		1. SP
+		create proc usp_sample
+		as 
+		begin
+		select * from abcd
+		end
+
+		2. Function
+		--not support deffered name resolution
+		create function fn_sample()
+		returns table
+		as
+		return(select * from abcd)
+
+		--error Msg 208, Level 16, State 1, Procedure fn_sample, Line 4 [Batch Start Line 135]
+		--Invalid object name 'abcd' 
+
+
+ -------------------------------------------
+ -------------------------------------------
+ Index
+ -------------------------------------------
+ -------------------------------------------
+
+		drop table Employee1
+		create table Employee1
+		(
+			Id int,
+			Name varchar(50)
+		)
+
+		insert into Employee1 values(5,'Dinesh')
+		insert into Employee1 values(1,'Mahesh')
+		insert into Employee1 values(7,'Richa')
+		insert into Employee1 values(2,'Avi')
+
+		select * from Employee1
+
+		create unique clustered index Ix_EmployeeID on Employee1(Id asc)
+
+		create  index Ix_EmployeeName on Employee1(Name asc)
+
+		drop table Employee1
+
+		**primary key creates clustered index but not alwasy
+
+		create table Employee1
+		(
+			Id int primary key,
+			Name varchar(50)
+		)
+
+		insert into Employee1 values(5,'Dinesh')
+		insert into Employee1 values(1,'Mahesh')
+		insert into Employee1 values(7,'Richa')
+		insert into Employee1 values(2,'Avi')
+		
+		verify in the object explorer
+
+		prove why not always
+		create table Employee1
+		(
+			Id int,
+			Name varchar(50)
+		)
+
+		insert into Employee1 values(5,'Dinesh')
+		insert into Employee1 values(1,'Mahesh')
+		insert into Employee1 values(7,'Richa')
+		insert into Employee1 values(2,'Avi')
+		
+		now create clustered index on one of the columns 
+
+		create clustered index Ix_EmployeeName on Employee1(Name asc)
+
+		through ui try to make Id column as a primary key it will create a primary key
+		but with non clustered unique index
+
+----------------------------------
+-----------------------------------
+Views:
+
+		create view vw_student
+		as 
+		(select Name, Gender from Student1)
+
+		select * from vw_student
+
+		insert into Student1 values('Anil', 'Male')
+
+		-------------------------**************-----------------
+		schemabinding
+
+		create table Sample
+		(
+			Id int primary key identity,
+			Name varchar(20),
+			Gender varchar(10),
+			Age int,
+			Fees int
+		)
+		insert into Sample values('Dinesh','Male',25,40000)
+		insert into Sample values('Nish','Female',22,30000)
+		insert into Sample values('Mahesh','Male',28,35000)
+		insert into Sample values('Richa','Female',20,21000)
+		insert into Sample values('Rakesh','Male',26,40000)
+
+		create view vw_sample
+		as 
+		(select Name,Gender from dbo.Sample)
+
+		drop table Sample
+
+		select * from vw_sample --Could not use view or function 'vw_sample' because of binding errors.
+
+		create table Sample
+		(
+			Id int primary key identity,
+			Name varchar(20),
+			Gender varchar(10),
+			Age int,
+			Fees int
+		)
+		insert into Sample values('Dinesh','Male',25,40000)
+		insert into Sample values('Nish','Female',22,30000)
+		insert into Sample values('Mahesh','Male',28,35000)
+		insert into Sample values('Richa','Female',20,21000)
+		insert into Sample values('Rakesh','Male',26,40000)
+
+		alter view vw_sample
+		with schemabinding
+		as 
+		(select Name,Gender from dbo.Sample)
+
+		select * from vw_sample
+
+		drop table Sample
+		--cannot DROP TABLE 'Sample' because it is being referenced by object 'vw_sample'.
+
+		create view vw_studenttrainer
+		as 
+		(select s.name as SName, t.Name as TName 
+		from studentCopy s join Trainer1 t on s.trainer_id=t.Id)
+
+		select * from vw_studenttrainer
+
+
+		--Materized view or indexed view
+
+		ALTER view [dbo].[vw_student]
+		as 
+		(select * from Student1)
+
+		select * from vw_student
+
+		update vw_student set Gender='Female' where Id=6
+
+		select * from Student1
+
+------------------------------------------
+----------------------------------------------
+Triggers 
+-----------------------------------------
+-----------------------------------------
+		:It is special type of SP.
+
+		DML Triggers - insert update, delete
+				1. for or after
+				2. insteadof
+
+		DDL Triggers - create alter, drop
+
+		Logon Triggers -When we do Authentication or login 
+
+		select * from Employee1
+
+		insert into Employee1 values(6,'Simaran')
+
+		create trigger Tr_Employee_Insert
+		on Employee1
+		for insert
+		as
+		begin
+		print 'My First trigger executed'
+		end
+
+		insert into Employee1 values(9,'Geeta')
+
+		alter trigger Tr_Employee_Insert
+		on Employee1
+		instead of insert
+		as
+		begin
+		print 'My First trigger executed'
+		end
+
+		insert into Employee1 values(11,'Vikram')
+		select * from Employee1
+
+
+		Magical table 
+		inserted
+		deleted
+
+		alter trigger Tr_Employee_Insert
+		on Employee1
+		instead of insert
+		as
+		begin
+		select * from inserted
+		end
+
+		insert into Employee1 values(11,'Vikram')
+		select * from Employee1
+
+		alter trigger Tr_Employee_Insert
+		on Employee1
+		instead of delete
+		as
+		begin
+		select * from inserted
+		select * from deleted
+		end
+
+		delete from Employee1 where Id=9
+
+		alter trigger Tr_Employee_Insert
+		on Employee1
+		instead of update
+		as
+		begin
+		select * from inserted
+		select * from deleted
+		end
+
+		select * from Employee1
+
+		update Employee1
+		set Name='Swati'
+		where Id=9
+
+
+
+		create table Employee
+		(Id int primary key,
+		Name varchar(20),
+		city varchar(20)
+		)
+
+		create table EmployeeAudit
+		(Id int primary key identity,
+		Description varchar(200)
+		)
+		insert into Employee values(1,'Sujit','Pune')
+		insert into EmployeeAudit values('Employee with id 1 inserted on 03-09-2021 08:14:40')
+
+		select * from Employee
+		select * from EmployeeAudit
+
+		create trigger Tr_Emp_audit
+		on Employee
+		for insert
+		as 
+		begin
+			declare @Id int
+			select @Id = Id from inserted
+			declare @Description varchar(100)
+			set @Description = 'Employee with id '+cast(@Id as varchar(10))+' inserted on '+cast(GETDATE() as varchar(20))
+			insert into EmployeeAudit values(@Description)
+			print 'Trigger executes successfully and data inserted into EmployeeAudit table also'
+		end
+
+		insert into Employee values(2,'Dinesh','Pandharpur')
+
+		select * from Employee
+		select * from EmployeeAudit
+
+		create trigger Tr_Emp_audit_update
+		on Employee
+		for update
+		as 
+		begin
+			declare @Id int,@NewCity varchar(20),@OldCity varchar(20)
+			select @Id = Id, @NewCity = city from inserted
+			select @OldCity =city from deleted
+			declare @Description varchar(200)
+			set @Description = 'Employee with id '+cast(@Id as varchar(10))+' has changed city from '+ @OldCity+' to '+ @NewCity+'  on '+cast(GETDATE() as varchar(20))
+			insert into EmployeeAudit values(@Description)
+			print 'Trigger executes successfully and data updated into EmployeeAudit table also'
+		end
+
+
+		update Employee set city='Mumbai' where Id=2
+
+		select * from Employee
+		select * from EmployeeAudit
+
+		create trigger Tr_Emp_audit_delete
+		on Employee
+		for delete
+		as 
+		begin
+			declare @Id int
+			select @Id = Id from deleted
+			declare @Description varchar(100)
+			set @Description = 'Employee with id '+cast(@Id as varchar(10))+' deleted on '+cast(GETDATE() as varchar(20))
+			insert into EmployeeAudit values(@Description)
+			print 'Trigger executes successfully and data deleted into EmployeeAudit table also'
+		end
+
+		delete from Employee where Id=2
+
+		select * from Employee
+		select * from EmployeeAudit
+
+		alter trigger Tr_Emp_audit_delete
+		on Employee
+		instead of delete
+		as 
+		begin
+			declare @Id int
+			select @Id = Id from deleted
+			declare @Description varchar(100)
+			set @Description = 'Employee with id '+cast(@Id as varchar(10))+' deleted on '+cast(GETDATE() as varchar(20))
+			insert into EmployeeAudit values(@Description)
+			print 'Trigger executes successfully and data deleted into EmployeeAudit table also'
+		end
+
+		delete from Employee where Id=1
+
+		select * from Employee
+		select * from EmployeeAudit
+
+
+		DDL Trigger
+		----------------
+
+		create trigger Tr_Database
+		on database
+		for create_table
+		as
+		begin 
+		print 'DDL trigger executed'
+		end
+
+		create table T1
+		(Id int)
+
+		create trigger Tr_Database_OnALLServer
+		on all server
+		for create_table
+		as
+		begin 
+		print 'DDL trigger executed'
+		end
+
+		select * from sysobjects 
+
+		select distinct type from sys.tables
+
+		select * from [Dinesh].INFORMATION_SCHEMA.TABLES
+
+		if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME='table11')
+		begin
+		drop table  table11
+		create table table11(Id int)
+		end
+		else
+		begin
+		create table table11(Id int)
+		end
+
+
+
+		select * from studentCopy
+		select * from Trainer1
+		insert into studentCopy values(8, 'Sangram','Male',null)
+
+		select t.Name as TrainerName, COUNT(s.id) StudentCount
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name
+
+
+		create view vw_studentCount
+		as 
+		(select t.Name as TrainerName, COUNT(s.id) StudentCount
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name)
+
+		select * from vw_studentCount where StudentCount>3
+
+
+		create table #StudentCount
+		(
+			Name Varchar(50),
+			StudentCount int
+		)
+
+		insert into #StudentCount 
+		select t.Name as TrainerName, COUNT(s.id) StudentCount
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name
+
+		select * from #StudentCount where StudentCount>3
+
+		select t.Name as TrainerName, COUNT(s.id) StudentCount into #TempStudent1
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name
+
+		select * from #TempStudent1 where StudentCount>3
+
+	##Table variable
+	declare @StudentTable table
+	(
+		Name varchar(50),
+		StudentCount int
+	)
+	insert into @StudentTable 
+	select t.Name as TrainerName, COUNT(s.id) StudentCount
+	from studentCopy s right join Trainer1 t 
+	on s.trainer_id = t.Id
+	group by t.Name
+
+	select * from @StudentTable where StudentCount>3
+
+
+DerivedTable***************
+
+		select TrainerName, StudentCount
+		from 
+		(select t.Name as TrainerName, COUNT(s.id) StudentCount
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name) as StudentDerivedTable
+		where StudentCount>3
+
+
+		with cte
+		as 
+		(select t.Name as TrainerName, COUNT(s.id) StudentCount
+		from studentCopy s right join Trainer1 t 
+		on s.trainer_id = t.Id
+		group by t.Name)
+		select * from cte where StudentCount>3
+
+
+		select * from Organization
+
+		select e.Name,m.Name
+		from Organization e left join Organization m
+		on e.ManagerId = m.Id
+
+		with cte(Id,Name,ManagerId,Level)
+		as
+		(
+			select Id, Name,ManagerId, 1 as Level from Organization where ManagerId is null 
+			union all
+			select e.Id, e.Name, e.ManagerId, (cte.Level+1) as Level
+			from  Organization e join cte 
+			on e.ManagerId = cte.Id
+			where e.ManagerId is not null
+		)
+		select * from cte
+
+--------------********************---------------
+Cursor
+----------------********************--------------------
+
+row by row operations---> may slow down the performance.
+
+use  Dinesh
+declare studentCursor cursor for
+select id,name,trainer_id from StudentCopy
+
+open studentCursor
+
+declare @id int,@name varchar(50), @trainer_id int
+fetch next  from studentCursor into @id,@name,@trainer_id
+
+while(@@FETCH_STATUS = 0)
+begin
+if @trainer_id is not null
+begin
+	declare @trainer_name varchar(50)
+	select @trainer_name =Name from Trainer1 where Id= @trainer_id 
+
+	print @Name + ' '+ @trainer_name
+	fetch next  from studentCursor into @id,@name,@trainer_id
+	end
+	else
+	begin
+	print @Name + ' '+ 'No Trainer'
+	end
+end
+
+close studentCursor
+deallocate studentCursor
+
+
+create table Account
+(AccountNo int,
+Name varchar(50),
+Balance int
+)
+go
+create proc usp_TransferAmount
+@From int,
+@To int,
+@amount int
+as
+begin
+update Account set Balance=Balance-@amount where AccountNo=@From
+update Account set Balance=Balance+@amount where AccountNo=@To
+end
+insert into Account values (111,'Dinesh',10000)
+insert into Account values (121,'Vishal',8000)
+insert into Account values (131,'Suresh',10000)
+
+select * from Account
+
+exec usp_TransferAmount 111,121,2000
+
+select * from Account
+
+alter proc usp_TransferAmount
+@From int,
+@To int,
+@amount int
+as
+begin
+update Account set Balance=Balance-@amount where AccountNo=@From
+update Account set Balance='ABC' where AccountNo=@To
+end
+
+exec usp_TransferAmount 111,121,2000
+select * from Account
+
+alter proc usp_TransferAmount
+@From int,
+@To int,
+@amount int
+as
+begin
+begin try
+begin tran
+update Account set Balance=Balance-@amount where AccountNo=@From
+update Account set Balance='ABC' where AccountNo=@To
+end try
+begin catch
+rollback
+end catch
+end
+
+exec usp_TransferAmount 121,111,2000
+select * from Account
+
+
+**************************************
+ERROR HANDLING
+**************************************
+
+create table Logs
+(Id int primary key identity,
+MessageNumber int,
+Message varchar(100),
+ObjectName varchar(50),
+ErrorState int,
+ErrorSeverity int,
+ErrorLine int
+)
+
+alter proc usp_TransferAmount
+@From int,
+@To int,
+@amount int
+as
+begin
+begin try
+begin tran
+update Account set Balance=Balance-@amount where AccountNo=@From
+update Account set Balance='ABC' where AccountNo=@To
+end try
+begin catch
+rollback
+insert into Logs values(error_number(),error_message(),ERROR_PROCEDURE(),
+error_state(),error_severity(),error_line())
+end catch
+end
+
+
+exec usp_TransferAmount 121,111,2000
+select * from Logs
+
+
+create table Employee
+
+with cte	
+	as 
+	(Ename varchar(50),Salary int, HighRank int )
+ 
+	select EName, salary,Rank()over(oder by salary desc) as HighRank into cet from Employee
+
+	select EName, Salary from cte where HighRank=2
+
+
+	*************Finding Duplicate*****************
+	select Name from emp where Eid in( select a.Eid from emp e join addr a 
+	on e.Eid =a.Eid 
+	group by a.Eid
+	having count(*)>1)
+
+
+	select Name from emp where Eid in (select Eid from addr group by Eid having count(*)>1)
+
+
+	WITH CTE([firstname], 
+    [lastname], 
+    [country], 
+    duplicatecount)
+	AS (SELECT [firstname], 
+           [lastname], 
+           [country], 
+           ROW_NUMBER() OVER(PARTITION BY [firstname], 
+                                          [lastname], 
+                                          [country]
+           ORDER BY id) AS DuplicateCount
+    FROM [SampleDB].[dbo].[employee])
+	SELECT * FROM CTE;
+	
+	
+	DELETE FROM CTE
+	WHERE DuplicateCount > 1;
